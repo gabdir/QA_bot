@@ -17,7 +17,7 @@ module.exports = {
     sendQuestion() {
     const rand = between(0, 10)
     const question = questions[rand]
-
     return question
-    }
+    }, 
+    questions 
 }

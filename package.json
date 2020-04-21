@@ -4,7 +4,9 @@
   "description": "Q/A Telegram bot ",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +24,10 @@
   },
   "homepage": "https://github.com/gabdir/QA_bot#readme",
   "dependencies": {
-    "node-telegram-bot-api": "^0.40.0"
+    "axios": "^0.19.2",
+    "node-telegram-bot-api": "^0.40.0",
+    "nodemon": "^2.0.3",
+    "socks5-https-client": "^1.2.1",
+    "telegraf": "^3.37.0"
   }
 }

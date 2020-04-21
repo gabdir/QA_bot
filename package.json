@@ -25,6 +25,7 @@
   "homepage": "https://github.com/gabdir/QA_bot#readme",
   "dependencies": {
     "axios": "^0.19.2",
+    "mysql": "^2.18.1",
     "node-telegram-bot-api": "^0.40.0",
     "nodemon": "^2.0.3",
     "socks5-https-client": "^1.2.1",

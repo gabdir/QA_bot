@@ -1,0 +1,27 @@
+{
+  "name": "qa_bot",
+  "version": "1.0.0",
+  "description": "Q/A Telegram bot ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabdir/QA_bot.git"
+  },
+  "keywords": [
+    "nodejs",
+    "telegram",
+    "bot"
+  ],
+  "author": "Aydar Gabdrahmanov <a.gabdrahmanov@innopolis.ru>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gabdir/QA_bot/issues"
+  },
+  "homepage": "https://github.com/gabdir/QA_bot#readme",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.40.0"
+  }
+}

@@ -1,6 +1,8 @@
 const Telegraf = require('telegraf')
 const Markup = require('telegraf/markup')
 const Extra = require('telegraf/extra')
+const session = require('telegraf/session')
+const fetch = require('node-fetch')
 
 const TelegrafInlineMenu = require('telegraf-inline-menu')
 const menu = new TelegrafInlineMenu(ctx => `Hey ${ctx.from.first_name}!`)
@@ -42,16 +44,39 @@ bot.hears(/\/help/, (ctx) => {
     })
 })
 
+function newQuestion(ctx){
+    var arr = prepared_data.getRandomQuestion()
+    var title = arr.title
+    var result = []
+    var prepared = arr.prepared
+    ctx.telegram.sendMessage(ctx.message.chat.id,arr.title, {reply_markup:{
+        inline_keyboard: [[{text: `${arr.buttons[0].text}`, 
+        switch_inline_query_current_chat: 'Answers'}]]
+    }})
+    return arr
+}
+
 bot.hears(/\/quiz/, (ctx) => {
-    ctx.reply('Starting the quiz.').then(() => {
-        let arr = prepared_data.getRandomQuestion()
-        ctx.reply(arr.title, Extra.HTML()
-                            .markup(Markup.inlineKeyboard([Markup.callbackButton(arr.buttons[0].text, arr.buttons[0].callback_data)])))
-        bot.action('reply', (ctx) => {
-            ctx.replyWithQuiz(arr.title, arr.prepared,  { correct_option_id: arr.right_answer })
+    var arr = newQuestion(ctx) 
+    var result = []
+    bot.on('inline_query', (ctx) => {
+        for (i = 0; i < arr.prepared.length; i ++) {
+            result.push({id: i.toString(), type:'article',title: `${arr.prepared[i]}`, input_message_content:{
+                message_text: `${arr.prepared[i]}` 
+            }})
+        }
+        var ar = [...result]
+        console.log(ar)
+        result.length = 0
+        // prepared.map((prep) => result.push(prep))
+        return ctx.telegram.answerInlineQuery(ctx.inlineQuery.id,ar, {
+            cache_time: 0, 
+            switch_pm_text: 'Talk directly', 
+            switch_pm_parameter: 'hello'
         })
-    })  
+    })
 })
+
 
 
 bot.on('message', (ctx) => {

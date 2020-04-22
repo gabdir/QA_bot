@@ -1,7 +1,7 @@
 const quiz = require('./quiz')
 
 const questions = quiz.questions
-const data = []
+var data = []
 const prepared_questions = []
 
 let i; 
@@ -18,7 +18,7 @@ for (i = 0; i < data.length; i ++) {
 module.exports = {
     data, 
     getRandomQuestion() {
-        const rand = data[Math.floor(Math.random()*data.length)]
+        var rand = data[Math.floor(Math.random()*data.length)]
         return rand 
     }
 }

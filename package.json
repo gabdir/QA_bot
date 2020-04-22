@@ -29,6 +29,7 @@
     "node-telegram-bot-api": "^0.40.0",
     "nodemon": "^2.0.3",
     "socks5-https-client": "^1.2.1",
-    "telegraf": "^3.37.0"
+    "telegraf": "^3.37.0",
+    "telegraf-inline-menu": "^4.0.0"
   }
 }

@@ -7,12 +7,13 @@ const prepared_questions = []
 let i; 
 for (i = 0; i < questions.length; i++){
     const title = `${questions[i].text}`
-    data.push({title: title, buttons: [{text: 'Reply', callback_data: 'reply'}], right_answer: `${questions[i].answers[questions[i].correct_answer]}`, prepared: `${[questions[i].answers]}`})
+    const prepared = `${[questions[i].answers]}`
+    data.push({title: title, buttons: [{text: 'Reply', callback_data: 'reply'}], obj: {right_answer: `${questions[i].correct_answer}`, prepared: prepared}})
     prepared_questions.push((questions[i].text,questions[i].answers))
 }
 
 for (i = 0; i < data.length; i ++) {
-    data[i].prepared = data[i].prepared.split(',')
+    data[i].obj.prepared = data[i].obj.prepared.split(',')
 }
 
 module.exports = {

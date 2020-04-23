@@ -46,47 +46,43 @@ function newQuestion(ctx){
     var arr = prepared_data.getRandomQuestion()
     ctx.telegram.sendMessage(ctx.message.chat.id,arr.title, {reply_markup:{
         inline_keyboard: [[{text: `${arr.buttons[0].text}`, 
-        switch_inline_query_current_chat: `${arr.prepared}`}]]
+        switch_inline_query_current_chat: `${arr.obj.prepared}`}]]
     }});
-    return arr
+    //Todo changing array every /quiz generation
+    bot.on('inline_query', (ctx) => {
+        var result = []
+        var query = ctx.inlineQuery.query
+        console.log(ctx.inlineQuery.query)
+        let i = 0
+        query = query.split(',')
+        for (i; i < query.length; i++) {
+            result.push({id: i.toString(), type:'article',title: `${query[i]}`, input_message_content:{
+                    message_text: `${query[i]}`
+                }})
+        }
+        ctx.answerInlineQuery(result, {
+            cache_time: 0,
+            switch_pm_text: 'Talk directly',
+            switch_pm_parameter: 'hello'
+        });
+        bot.on('chosen_inline_result', ctx => {
+            if (ctx.chosenInlineResult.result_id === arr.obj.right_answer) {
+                ctx.telegram.sendMessage(ctx.from.id, 'Right answer ✅')
+            }
+            else {
+                ctx.telegram.sendMessage(ctx.from.id, 'Wrong answer ❌')
+            }
+        });
+    });
 }
 
 bot.hears(/\/quiz/, (ctx) => {
-    var arr = newQuestion(ctx)
+    newQuestion(ctx)
 });
-
-bot.on('inline_query', (ctx) => {
-    console.log(ctx.inlineQuery.query)
-    var result = []
-    var arr = ctx.inlineQuery.query
-    var i = 0
-    arr = arr.split(',')
-    for (i; i < arr.length; i++) {
-        result.push({id: i.toString(), type:'article',title: `${arr[i]}`, input_message_content:{
-                message_text: `${arr[i]}`
-        }})
-    }
-    //console.log(result)
-    ctx.telegram.answerInlineQuery(ctx.inlineQuery.id,result, {
-        cache_time: 0,
-        switch_pm_text: 'Talk directly',
-        switch_pm_parameter: 'hello'
-    });
-});
-
-bot.on('chosen_inline_result', ctx => {
-    console.log('You chosed an inline query result')
-});
-
 
 
 bot.on('message', (ctx) => {
-    ctx.reply(`Hello, ${ctx.from.first_name}. How are you?`,
-    Extra.HTML()
-    .markup(Markup.inlineKeyboard([
-        Markup.callbackButton('Ok', 'not bad'),
-        Markup.callbackButton('Bad', 'all right')
-    ])))
+    ctx.reply(`Hi again, ${ctx.from.first_name}! Type /quiz to continue to quiz.`)
 });
 
 bot.action('not bad', (ctx) => {

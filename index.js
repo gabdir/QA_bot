@@ -10,7 +10,7 @@ menu.setCommand('start')
  
 menu.simpleButton('I am excited!', 'a', {
   doFunc: ctx => ctx.reply('As am I!')
-})
+});
 
 const quiz = require('./quiz')
 const prepared_data = require('./data')
@@ -30,9 +30,7 @@ bot.start((ctx) => {
     return ctx.reply(`Добро пожаловать! 
 Если ты хочешь узнать о командах - набери /help
 Если же ты хочешь начать квиз - набери /quiz
-    `);
-
-
+   `);
 });
 
 bot.hears(/\/help/, (ctx) => {
@@ -42,40 +40,43 @@ bot.hears(/\/help/, (ctx) => {
         ctx.reply('/help - To see available commands', Extra.HTML())
         ctx.reply('/quiz - To start the quiz', Extra.HTML())
     })
-})
+});
 
 function newQuestion(ctx){
     var arr = prepared_data.getRandomQuestion()
-    var title = arr.title
-    var result = []
-    var prepared = arr.prepared
     ctx.telegram.sendMessage(ctx.message.chat.id,arr.title, {reply_markup:{
         inline_keyboard: [[{text: `${arr.buttons[0].text}`, 
-        switch_inline_query_current_chat: 'Answers'}]]
-    }})
+        switch_inline_query_current_chat: `${arr.prepared}`}]]
+    }});
     return arr
 }
 
 bot.hears(/\/quiz/, (ctx) => {
-    var arr = newQuestion(ctx) 
+    var arr = newQuestion(ctx)
+});
+
+bot.on('inline_query', (ctx) => {
+    console.log(ctx.inlineQuery.query)
     var result = []
-    bot.on('inline_query', (ctx) => {
-        for (i = 0; i < arr.prepared.length; i ++) {
-            result.push({id: i.toString(), type:'article',title: `${arr.prepared[i]}`, input_message_content:{
-                message_text: `${arr.prepared[i]}` 
-            }})
-        }
-        var ar = [...result]
-        console.log(ar)
-        result.length = 0
-        // prepared.map((prep) => result.push(prep))
-        return ctx.telegram.answerInlineQuery(ctx.inlineQuery.id,ar, {
-            cache_time: 0, 
-            switch_pm_text: 'Talk directly', 
-            switch_pm_parameter: 'hello'
-        })
-    })
-})
+    var arr = ctx.inlineQuery.query
+    var i = 0
+    arr = arr.split(',')
+    for (i; i < arr.length; i++) {
+        result.push({id: i.toString(), type:'article',title: `${arr[i]}`, input_message_content:{
+                message_text: `${arr[i]}`
+        }})
+    }
+    //console.log(result)
+    ctx.telegram.answerInlineQuery(ctx.inlineQuery.id,result, {
+        cache_time: 0,
+        switch_pm_text: 'Talk directly',
+        switch_pm_parameter: 'hello'
+    });
+});
+
+bot.on('chosen_inline_result', ctx => {
+    console.log('You chosed an inline query result')
+});
 
 
 
@@ -86,19 +87,19 @@ bot.on('message', (ctx) => {
         Markup.callbackButton('Ok', 'not bad'),
         Markup.callbackButton('Bad', 'all right')
     ])))
-})
+});
 
 bot.action('not bad', (ctx) => {
     ctx.editMessageText(`<i>Have a nice day 😊</i>
 Type /quiz if you want to start a quiz.`,
         Extra.HTML())
-})
+});
 bot.action('all right', (ctx) => {
     ctx.editMessageText('<i>May happiness be with you 🙏</i> Type /quiz if you want to start a quiz.',
         Extra.HTML())
-})
+});
 
 
 
 
-bot.launch()
+bot.launch();
